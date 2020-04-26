@@ -14,7 +14,7 @@ export class UserService {
   async getName(params): Promise<User> {
     const repeatedUser = await this.userModel.findOne(params)
     if (repeatedUser){
-      throw new HttpException('用户已存在,创建失败',HttpStatus.FORBIDDEN)
+      throw new HttpException('用户已存在,创建失败',HttpStatus.CONFLICT)
     }
     const user = await new this.userModel(params).save()
     return user;

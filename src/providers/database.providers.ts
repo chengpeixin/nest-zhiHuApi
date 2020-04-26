@@ -1,7 +1,5 @@
 import * as mongoose from 'mongoose';
-import { account, mongodbUrl, pwd, authSource } from './../../dataBase'
-export const secret = 'XinPeiChengHenShuai'
-
+import { account, mongodbUrl, pwd, authSource } from '../../config'
 export const databaseProviders = [
   {
     provide: 'DATABASE_CONNECTION',
