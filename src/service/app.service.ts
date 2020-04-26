@@ -8,11 +8,4 @@ export class AppService {
   getHello(): string {
     return 'Hello World!';
   }
-  getName(): userInfo {
-    // console.log(this.userModel)
-    return {
-      name:'xpc',
-      age:18
-    }
-  }
 }
