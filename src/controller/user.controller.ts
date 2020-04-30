@@ -1,8 +1,8 @@
-import { Controller, Req,Get, Post, Param } from '@nestjs/common';
+import { Controller, Req,Get, Post, Param, Body, UsePipes } from '@nestjs/common';
 import {UserService} from './../service/users.service'
 import { Request } from 'express';
 import { User } from './../interface/user.interface';
-
+import { CreateUserDto } from 'src/dto/users.dto';
 @Controller('user')
 export class UserController {
     constructor(
@@ -11,7 +11,6 @@ export class UserController {
 
     @Get('add')
     getAdd():string {
-        console.log(123)
         return 'wqewqeqwewqeqw';
     }
 
@@ -28,7 +27,7 @@ export class UserController {
 
     // 创建用户
     @Post()
-    createUser(@Req() request: Request):Promise<User>{
-        return this.usersService.createUser(request.body);
+    createUser(@Body() CreateUserDto: CreateUserDto):Promise<User>{
+        return this.usersService.createUser(CreateUserDto);
     }
 }
