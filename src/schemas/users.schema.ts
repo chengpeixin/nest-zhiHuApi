@@ -1,7 +1,10 @@
 
 import * as Mongoose from 'mongoose'
+// 分页插件
+import * as mongoosePaginate  from 'mongoose-paginate-v2'
 
 const { Schema, model } = Mongoose
+
 
 export const UserSchema = new Schema({
     __v:{
@@ -104,3 +107,4 @@ export const UserSchema = new Schema({
     }
 })
 
+UserSchema.plugin(mongoosePaginate )

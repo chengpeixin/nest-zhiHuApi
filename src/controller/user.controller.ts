@@ -1,23 +1,18 @@
-import { Controller, Req,Get, Post, Param, Body, UsePipes } from '@nestjs/common';
+import { Controller, Req,Get, Post, Param, Body, UsePipes, Query } from '@nestjs/common';
 import {UserService} from './../service/users.service'
 import { Request } from 'express';
 import { User } from './../interface/user.interface';
-import { CreateUserDto } from 'src/dto/users.dto';
+import { CreateUserDto,FindUsersDto } from 'src/dto/users.dto';
 @Controller('user')
 export class UserController {
     constructor(
         private usersService: UserService
     ){}
 
-    @Get('add')
-    getAdd():string {
-        return 'wqewqeqwewqeqw';
-    }
-
-    // 根据用户名称查找
+    // 分页查询用户，支持用户名称
     @Get('findUsers')
-    getFindUsers(@Req() request: Request):Promise<User[]>{
-        return this.usersService.getFindUsers(request.query);
+    getFindUsers(@Query() FindUsersDto: FindUsersDto):Promise<User[]>{
+        return this.usersService.getFindUsers(FindUsersDto);
     }
 
     @Get(':id')
