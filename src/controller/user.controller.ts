@@ -3,6 +3,9 @@ import {UserService} from './../service/users.service'
 import { Request } from 'express';
 import { User } from './../interface/user.interface';
 import { CreateUserDto,FindUsersDto } from 'src/dto/users.dto';
+import {PaginateParseIntPipe} from './../pipes/paginate.pipe'
+
+var a = {}
 @Controller('user')
 export class UserController {
     constructor(
@@ -11,8 +14,8 @@ export class UserController {
 
     // 分页查询用户，支持用户名称
     @Get('findUsers')
-    getFindUsers(@Query() FindUsersDto: FindUsersDto):Promise<User[]>{
-        return this.usersService.getFindUsers(FindUsersDto);
+    pipe(@Query() findUsersDto: FindUsersDto):Promise<User[]>{
+        return this.usersService.getFindUsers(findUsersDto);
     }
 
     @Get(':id')

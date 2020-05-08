@@ -2,7 +2,6 @@ import { Injectable, Inject, Req, HttpException, HttpStatus } from '@nestjs/comm
 import { Model } from 'mongoose';
 import { User } from './../interface/user.interface';
 import { CreateUserDto, FindUsersDto } from 'src/dto/users.dto';
-import { promises } from 'dns';
 
 @Injectable()
 export class UserService {
@@ -22,17 +21,16 @@ export class UserService {
   }
 
   // 分页查询用户
-  async getFindUsers(params:FindUsersDto): Promise<User[]>{
-    console.log(params)
+  async getFindUsers({page,limit,name}:FindUsersDto): Promise<User[]>{
+    const select = '+gender'
     return await this.userModel['paginate'](
-
+      {
+        name:new RegExp(name)
+      },
+      {
+        page,limit,select
+      }
     )
-    // const {per_page=10,q='',page} = params
-    // const currentPage = Math.max(page * 1,1 )-1
-    // const perPage = Math.max(per_page * 1,1)
-    // return await this.userModel.find({
-    //     name:new RegExp(q)
-    // }).limit(perPage).skip(currentPage*perPage)
   }
 
   // 根据id查找用户
