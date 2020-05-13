@@ -1,11 +1,10 @@
-import { Controller, Req,Get, Post, Param, Body, UsePipes, Query } from '@nestjs/common';
+import { Controller, Req,Get, Post, Param, Body, UsePipes, Query, UseGuards } from '@nestjs/common';
 import {UserService} from './../service/users.service'
-import { Request } from 'express';
 import { User } from './../interface/user.interface';
-import { CreateUserDto,FindUsersDto } from 'src/dto/users.dto';
-import {PaginateParseIntPipe} from './../pipes/paginate.pipe'
+import { CreateUserDto,FindUsersDto, LoginDto } from 'src/dto/users.dto';
+import { SelectFields } from 'src/decorators/fields.decorator';
+import { JwtAuthGuard } from 'src/module/auth/jwt-auth.guard';
 
-var a = {}
 @Controller('user')
 export class UserController {
     constructor(
@@ -18,9 +17,11 @@ export class UserController {
         return this.usersService.getFindUsers(findUsersDto);
     }
 
+    // 根据id获取用户信息
+    @UseGuards(JwtAuthGuard)
     @Get(':id')
-    getFindByIdUser(@Param() params,@Req() request: Request):Promise<User>{
-        return this.usersService.findByIdUser(params.id,request.query);
+    getFindByIdUser(@Param('id') id,@SelectFields() fields):Promise<User>{
+        return this.usersService.findByIdUser(id,fields);
     }
 
     // 创建用户

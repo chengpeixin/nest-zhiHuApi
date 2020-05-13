@@ -17,3 +17,12 @@ export interface User extends Document {
   readonly disliningAnswers: string[];
   readonly collectingAnswers: string[];
 }
+
+export interface UserToken {
+  readonly accessToken:string
+}
+
+export interface UserLogin {
+  readonly name:string;
+  readonly password:string;
+}

@@ -42,3 +42,14 @@ export class FindUsersDto {
     })
     limit:number;
 }
+
+export class LoginDto{
+    @IsString({
+        message:'name必传且为字符串类型'
+    })
+    name :string;
+    @IsString({
+        message:'password必传且为字符串类型'
+    })
+    password:string;
+}

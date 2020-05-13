@@ -1,6 +1,6 @@
 import { Injectable, Inject, Req, HttpException, HttpStatus } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { User } from './../interface/user.interface';
+import { User, UserToken, UserLogin } from './../interface/user.interface';
 import { CreateUserDto, FindUsersDto } from 'src/dto/users.dto';
 
 @Injectable()
@@ -34,18 +34,21 @@ export class UserService {
   }
 
   // 根据id查找用户
-  async findByIdUser(id,params){
-    let {fields=';'} = params
-    const selectFields = fields.split(';').filter(f=>f).map(f=>`+${f}`).join(' ')
-    const populate = fields.split(';').filter(f=>f).map(f=>{
-        switch (f) {
-            case 'employments': return 'employments.company employments.job';
-            case 'educations':return 'educations.school educations.major';
-            default: return f
-        }
-    }).join(' ')
-    const user = await this.userModel.findById(id).select(selectFields).populate(populate)
+  async findByIdUser(id,selectFields){
+    // const populate = fields.split(';').filter(f=>f).map(f=>{
+    //     switch (f) {
+    //         case 'employments': return 'employments.company employments.job';
+    //         case 'educations':return 'educations.school educations.major';
+    //         default: return f
+    //     }
+    // }).join(' ')
+    const user = await this.userModel.findById(id) //.select(selectFields).populate(populate)
     if  (!user) throw new HttpException('用户不存在',HttpStatus.NOT_FOUND)
     return user
+  }
+
+  // 根据账号密码查找用户
+  async findOne(...args):Promise<User | undefined | null>{
+    return await this.userModel.findOne(...args)
   }
 }
