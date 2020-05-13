@@ -1,6 +1,6 @@
 import { Injectable, Inject, Req, HttpException, HttpStatus } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { User, UserToken, UserLogin } from './../interface/user.interface';
+import { User } from './../interface/user.interface';
 import { CreateUserDto, FindUsersDto } from 'src/dto/users.dto';
 
 @Injectable()
@@ -45,6 +45,12 @@ export class UserService {
     const user = await this.userModel.findById(id) //.select(selectFields).populate(populate)
     if  (!user) throw new HttpException('用户不存在',HttpStatus.NOT_FOUND)
     return user
+  }
+
+  // 修改密码
+  async updatePassword(params):Promise<User | null>{
+    console.log(params)
+    return null
   }
 
   // 根据账号密码查找用户
