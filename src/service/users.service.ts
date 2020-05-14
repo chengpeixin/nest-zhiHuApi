@@ -48,13 +48,20 @@ export class UserService {
   }
 
   // 修改密码
-  async updatePassword(params):Promise<User | null>{
-    console.log(params)
-    return null
+  async updatePassword(newPass, oldPass,userId):Promise<User | null>{
+    const user = await this.userModel.findByIdAndUpdate(userId,{
+      password:newPass
+    })
+    return user
   }
 
   // 根据账号密码查找用户
   async findOne(...args):Promise<User | undefined | null>{
-    return await this.userModel.findOne(...args)
+    return await this.userModel.findOne(...args).select('+password')
+  }
+
+  // 根据id查询用户
+  async findOneByUserId(_id:string):Promise<User>{
+    return await this.userModel.findById(_id).select('+password')
   }
 }

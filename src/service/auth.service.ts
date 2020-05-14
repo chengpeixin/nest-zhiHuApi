@@ -30,4 +30,9 @@ export class AuthService {
       accessToken:this.jwtService.sign(payLoad)
     }
   }
+
+  // 修改密码
+  async updatePassword(newPass, oldPass,userId):Promise<User>{
+    return await this.usersService.updatePassword(newPass, oldPass,userId)
+  }
 }

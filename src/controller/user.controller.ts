@@ -1,10 +1,9 @@
-import { Controller, Req,Get, Post, Param, Body, UsePipes, Query, UseGuards, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Query, UseGuards } from '@nestjs/common';
 import {UserService} from './../service/users.service'
 import { User } from './../interface/user.interface';
 import { CreateUserDto,FindUsersDto } from 'src/dto/users.dto';
 import { SelectFields } from 'src/decorators/fields.decorator';
 import { JwtAuthGuard } from 'src/module/auth/jwt-auth.guard';
-import { Owner } from 'src/decorators/checkOwner.decorator';
 
 @Controller('user')
 export class UserController {
@@ -29,12 +28,5 @@ export class UserController {
     @Post()
     createUser(@Body() CreateUserDto: CreateUserDto):Promise<User>{
         return this.usersService.createUser(CreateUserDto);
-    }
-
-    // 修改密码
-    @Owner()
-    @Patch(':id')
-    updatePassword(@Param() params):Promise<User>{
-        return this.usersService.updatePassword(params)
     }
 }

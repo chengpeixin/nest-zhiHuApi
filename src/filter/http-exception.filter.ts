@@ -28,7 +28,7 @@ export  class HttpExceptionFilter  implements ExceptionFilter {
             url: request.originalUrl
         }
         if (errorResponse.message === 'Unauthorized'){
-            errorResponse.message = '用户授权失败,请重试'
+            errorResponse.message = '用户授权失败'
         }
         response.status(status).json(errorResponse)
     }

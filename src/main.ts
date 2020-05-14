@@ -11,7 +11,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule,{
     logger:getLogger()
   });
-  // console.log(env.NODE_ENV)
   app.useGlobalPipes(new PaginateParseIntPipe())
   app.useGlobalPipes(new ValidationPipe(
     {
