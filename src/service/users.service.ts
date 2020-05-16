@@ -47,6 +47,12 @@ export class UserService {
     return user
   }
 
+  // 注销账号
+  async deleteUser(userId):Promise<any>{ 
+    const user = await this.userModel.findByIdAndRemove(userId)
+    return {}
+  }
+
   // 修改密码
   async updatePassword(newPass, oldPass,userId):Promise<User | null>{
     const user = await this.userModel.findByIdAndUpdate(userId,{

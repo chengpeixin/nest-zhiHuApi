@@ -1,4 +1,5 @@
 import { IsString, MinLength, MaxLength, IsInt, Min } from "class-validator";
+import { User } from "src/interface/user.interface";
 const NAME_LENGTH:number = 6
 const STRING_MESSAGE = '必须是字符串类型'
 
@@ -52,4 +53,9 @@ export class LoginDto{
         message:'password必传且为字符串类型'
     })
     password:string;
+}
+
+
+export class DeleteUserDto {
+    user:User
 }
