@@ -31,6 +31,7 @@
     "mongoose": "^5.9.10",
     "mongoose-paginate-v2": "^1.3.9",
     "nest-winston": "^1.3.4",
+    "nestjs-redis": "^1.2.8",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",

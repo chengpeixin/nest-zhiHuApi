@@ -31,6 +31,15 @@ export class AuthService {
     }
   }
 
+  async findUser(uname:string):Promise<User>{
+    return await this.usersService.findOne({name:uname},'+password')
+  }
+
+  // 
+  setJwt(payLoad:any):string{
+    return this.jwtService.sign(payLoad)
+  }
+
   // 修改密码
   async updatePassword(newPass, oldPass,userId):Promise<User>{
     return await this.usersService.updatePassword(newPass, oldPass,userId)
