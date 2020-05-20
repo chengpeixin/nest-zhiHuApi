@@ -1,17 +1,16 @@
 import { WinstonModule } from 'nest-winston'
 import * as Winston from 'winston'
 import { LoggerService } from '@nestjs/common';
-const  { combine, timestamp, label, printf } = Winston.format
-const myFormat = printf(({ level, message, label, timestamp }) => {
-    return `${timestamp} [${label}] ${level}: ${message}`;
-  });
+const  { combine, timestamp, label, printf,json } = Winston.format
 export function getLogger():LoggerService{
     let transports:Array<any> = [
         new Winston.transports.File(
             {
                 filename:'error.log',
                 level:'error',
-                format: combine(timestamp(),myFormat)
+                format: combine(timestamp({
+                    format: 'YYYY年MM月DD日 HH:mm:ss'
+                  }),json())
             }
         ),
     ]

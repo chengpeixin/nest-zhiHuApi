@@ -8,7 +8,7 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthController } from 'src/controller/auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { RedisModule } from 'nestjs-redis'
-import { redisOpts } from 'config';
+import { redisOpts, jwtEx } from 'config';
 import { CacheService } from 'src/service/cache.service'
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { CacheService } from 'src/service/cache.service'
       }),
       JwtModule.register({
           secret:jwtConstants.secret,
-          signOptions: { expiresIn: '1h' }
+          signOptions: { expiresIn: jwtEx }
       })
   ],
   controllers:[AuthController],

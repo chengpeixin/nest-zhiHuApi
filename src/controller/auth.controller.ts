@@ -39,7 +39,7 @@ export class AuthController {
     @Delete('logout')
     async logOut(@DUser() user:User){
         await this.cacheService.remove(user._id)
-        return {}
+        return Object.create(null)
     }
 
     // 验证用户
