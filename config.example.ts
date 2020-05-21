@@ -1,3 +1,4 @@
+// 模板配置文件
 export const mongodbUrl = '数据库链接地址'
 
 export const pwd = '数据库密码'
