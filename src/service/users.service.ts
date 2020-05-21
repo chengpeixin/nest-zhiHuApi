@@ -1,4 +1,4 @@
-import { Injectable, Inject, Req, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, Inject, Req, HttpException, HttpStatus, PlainLiteralObject } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { User } from './../interface/user.interface';
 import { CreateUserDto, FindUsersDto } from 'src/dto/users.dto';
@@ -42,7 +42,12 @@ export class UserService {
     //         default: return f
     //     }
     // }).join(' ')
-    const user = await this.userModel.findById(id) //.select(selectFields).populate(populate)
+    let user;
+    if (selectFields){
+      user = await this.userModel.findById(id).select(selectFields)
+    }else {
+      user = await this.userModel.findById(id)
+    }
     if  (!user) throw new HttpException('用户不存在',HttpStatus.NOT_FOUND)
     return user
   }
@@ -59,6 +64,27 @@ export class UserService {
       password:newPass
     })
     return user
+  }
+
+  // 关注用户
+  async followTopic(followingId: string,myId: string):Promise<PlainLiteralObject>{
+    const me = await this.findByIdUser(myId,'+following')
+    if (!me.following.map((id: { toString: () => any; })=>id.toString()).includes(followingId)){
+      me.following.push(followingId)
+      me.save()
+    }
+    return {}
+  }
+
+  // 取消关注用户
+  async unfollowTopic(unfollowUserId:string,myId:string):Promise<PlainLiteralObject>{
+    const me = await this.findByIdUser(myId,'+following')
+    const index = me.following.map((id: { toString: () => any; })=>id.toString()).indexOf(unfollowUserId)
+    if (index>-1){
+        me.following.splice(index,1)
+        me.save()
+    }
+    return {}
   }
 
   // 根据账号密码查找用户

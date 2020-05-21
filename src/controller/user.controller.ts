@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Param, Body, Query, UseGuards, Delete, Req, HttpException, HttpStatus } from '@nestjs/common';
-import {UserService} from './../service/users.service'
+import { Controller, Get, Post, Param, Body, Query, UseGuards, Delete, Req, HttpException, HttpStatus, Put } from '@nestjs/common';
+import { UserService } from './../service/users.service'
 import { User } from './../interface/user.interface';
 import { CreateUserDto,FindUsersDto } from 'src/dto/users.dto';
 import { SelectFields } from 'src/decorators/fields.decorator';
 import { JwtAuthGuard } from 'src/module/auth/jwt-auth.guard';
+import { DUser } from 'src/decorators/user.decorator';
 
 @Controller('user')
 export class UserController {
@@ -39,5 +40,18 @@ export class UserController {
     @Post()
     createUser(@Body() CreateUserDto: CreateUserDto):Promise<User>{
         return this.usersService.createUser(CreateUserDto);
+    }
+
+    // 关注
+    @UseGuards(JwtAuthGuard)
+    @Put('following/:id')
+    async followTopic(@Param('id') userId:string,@DUser() user:User):Promise<any>{
+        return await this.usersService.followTopic(userId,user._id)
+    }
+    // 取消关注
+    @UseGuards(JwtAuthGuard)
+    @Delete('following/:id')
+    async unfollowTopic(@Param('id') userId:string,@DUser() user:User){
+        return await this.usersService.unfollowTopic(userId,user._id)
     }
 }
