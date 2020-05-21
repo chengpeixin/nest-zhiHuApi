@@ -92,6 +92,15 @@ export class UserService {
     return await this.userModel.findOne(...args).select('+password')
   }
 
+  // 获取关注列表
+  async listFollowers(id: string):Promise<User[]>{
+    // 查找followingID为传入id的数据
+    const users:Array<User> = await this.userModel.find({
+      following:id
+    })
+    return users
+  }
+
   // 根据id查询用户
   async findOneByUserId(_id:string):Promise<User>{
     return await this.userModel.findById(_id).select('+password')

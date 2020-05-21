@@ -26,3 +26,11 @@ export interface UserLogin {
   readonly name:string;
   readonly password:string;
 }
+
+
+type Followers = User[]
+
+
+export interface FollowersList{
+  followers:Followers
+}
