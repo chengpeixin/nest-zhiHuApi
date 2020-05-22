@@ -55,7 +55,7 @@ export class UserController {
         return await this.usersService.unfollowTopic(userId,user._id)
     }
 
-    // 查看关注列表
+    // 查看关注的人列表
     @UseGuards(JwtAuthGuard)
     @Get(':id/followers')
     async listFollowers(@Param('id') id:string):Promise<FollowersList>{
