@@ -5,11 +5,15 @@ import { CreateUserDto,FindUsersDto } from 'src/dto/users.dto';
 import { SelectFields } from 'src/decorators/fields.decorator';
 import { JwtAuthGuard } from 'src/module/auth/jwt-auth.guard';
 import { DUser } from 'src/decorators/user.decorator';
+import { FollowTopicDto } from 'src/dto/topic.dto';
+import { Topic } from 'src/interface/topic.interface';
+import { TopicService } from 'src/service/topic.service';
 
 @Controller('user')
 export class UserController {
     constructor(
-        private usersService: UserService
+        private usersService: UserService,
+        private topicService:TopicService
     ){}
 
     // 分页查询用户，支持用户名称
@@ -42,17 +46,17 @@ export class UserController {
         return this.usersService.createUser(CreateUserDto);
     }
 
-    // 关注
+    // 关注用户
     @UseGuards(JwtAuthGuard)
     @Put('following/:id')
-    async followTopic(@Param('id') userId:string,@DUser() user:User):Promise<any>{
-        return await this.usersService.followTopic(userId,user._id)
+    async followUser(@Param('id') userId:string,@DUser() user:User):Promise<any>{
+        return await this.usersService.followUser(userId,user._id)
     }
-    // 取消关注
+    // 取消关注用户
     @UseGuards(JwtAuthGuard)
     @Delete('following/:id')
-    async unfollowTopic(@Param('id') userId:string,@DUser() user:User){
-        return await this.usersService.unfollowTopic(userId,user._id)
+    async unfollowUser(@Param('id') userId:string,@DUser() user:User){
+        return await this.usersService.unfollowUser(userId,user._id)
     }
 
     // 查看关注的人列表
@@ -61,6 +65,19 @@ export class UserController {
     async listFollowers(@Param('id') id:string):Promise<FollowersList>{
         return {
             followers:await this.usersService.listFollowers(id)
+        }
+    }
+
+    // 关注话题
+    @UseGuards(JwtAuthGuard)
+    @Put('followingTopic/:id')
+    async followTopic(@Param() followTopicDto:FollowTopicDto,@DUser() user:User):Promise<PlainLiteralObject>{
+        const topic = await this.topicService.findTopicById(followTopicDto.id)
+        console.log(topic)
+        if (topic){
+            return this.usersService.followTopic(followTopicDto.id,user._id)
+        }else {
+            throw new HttpException('话题不存在',HttpStatus.NOT_FOUND)
         }
     }
 }

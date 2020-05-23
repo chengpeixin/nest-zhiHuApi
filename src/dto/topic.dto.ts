@@ -46,7 +46,13 @@ export class FindTopicDto{
 }
 
 
-
+// 关注topic
+export class FollowTopicDto{
+    @IsString({
+        message:"id必须为字符串且必穿"
+    })
+    id:string;
+}
 
 
 export class DeleteUserDto {

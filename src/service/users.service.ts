@@ -2,6 +2,7 @@ import { Injectable, Inject, Req, HttpException, HttpStatus, PlainLiteralObject 
 import { Model } from 'mongoose';
 import { User } from './../interface/user.interface';
 import { CreateUserDto, FindUsersDto } from 'src/dto/users.dto';
+import { Topic } from 'src/interface/topic.interface';
 
 @Injectable()
 export class UserService {
@@ -35,13 +36,6 @@ export class UserService {
 
   // 根据id查找用户
   async findByIdUser(id,selectFields){
-    // const populate = fields.split(';').filter(f=>f).map(f=>{
-    //     switch (f) {
-    //         case 'employments': return 'employments.company employments.job';
-    //         case 'educations':return 'educations.school educations.major';
-    //         default: return f
-    //     }
-    // }).join(' ')
     let user;
     if (selectFields){
       user = await this.userModel.findById(id).select(selectFields)
@@ -67,7 +61,7 @@ export class UserService {
   }
 
   // 关注用户
-  async followTopic(followingId: string,myId: string):Promise<PlainLiteralObject>{
+  async followUser(followingId: string,myId: string):Promise<PlainLiteralObject>{
     const me = await this.findByIdUser(myId,'+following')
     if (!me.following.map((id: { toString: () => any; })=>id.toString()).includes(followingId)){
       me.following.push(followingId)
@@ -77,7 +71,7 @@ export class UserService {
   }
 
   // 取消关注用户
-  async unfollowTopic(unfollowUserId:string,myId:string):Promise<PlainLiteralObject>{
+  async unfollowUser(unfollowUserId:string,myId:string):Promise<PlainLiteralObject>{
     const me = await this.findByIdUser(myId,'+following')
     const index = me.following.map((id: { toString: () => any; })=>id.toString()).indexOf(unfollowUserId)
     if (index>-1){
@@ -92,13 +86,23 @@ export class UserService {
     return await this.userModel.findOne(...args).select('+password')
   }
 
-  // 获取关注列表
+  // 获取关注人列表
   async listFollowers(id: string):Promise<User[]>{
     // 查找followingID为传入id的数据
     const users:Array<User> = await this.userModel.find({
       following:id
     })
     return users
+  }
+
+  // 关注某个话题
+  async followTopic(topicId:string,userId:string):Promise<PlainLiteralObject>{
+    const me:User = await this.userModel.findById(userId).select('+followingTopics')
+    if (!me.followingTopics.map(id=>id.toString()).includes(topicId)){
+        me.followingTopics.push(topicId)
+        me.save()
+    }
+    return {};
   }
 
   // 根据id查询用户
