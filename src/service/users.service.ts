@@ -105,6 +105,27 @@ export class UserService {
     return {};
   }
 
+  // 取消关注话题
+  async unFollowTopic(topicId:string,userId:string):Promise<PlainLiteralObject>{
+    const me = await this.userModel.findById(userId).select('+followingTopics')
+    const index = me.followingTopics.map(id=>id.toString()).indexOf(topicId)
+    if (index>-1){
+        me.followingTopics.splice(index,1)
+        me.save()
+    }
+    return {}
+  }
+
+  // 获取关注话题列表
+  async getFollowingTopics(id:string):Promise<Topic[]>{
+    const user:User = await this.userModel.findById(id).select('+followingTopics').populate('followingTopics')
+    if(!user){
+        throw new HttpException('用户不存在',HttpStatus.NOT_FOUND)
+    }else{
+      return user.followingTopics;
+    }
+  }
+
   // 根据id查询用户
   async findOneByUserId(_id:string):Promise<User>{
     return await this.userModel.findById(_id).select('+password')

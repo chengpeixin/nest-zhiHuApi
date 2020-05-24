@@ -83,7 +83,7 @@ export const UserSchema = new Schema({
     },
     followingTopics:{
         type:[{
-            type:Schema.Types.ObjectId,ref:'Topics'
+            type:Schema.Types.ObjectId,ref:'Topic'
         }],
         select:false
     },

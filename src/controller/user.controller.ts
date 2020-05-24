@@ -73,11 +73,31 @@ export class UserController {
     @Put('followingTopic/:id')
     async followTopic(@Param() followTopicDto:FollowTopicDto,@DUser() user:User):Promise<PlainLiteralObject>{
         const topic = await this.topicService.findTopicById(followTopicDto.id)
-        console.log(topic)
         if (topic){
             return this.usersService.followTopic(followTopicDto.id,user._id)
         }else {
             throw new HttpException('话题不存在',HttpStatus.NOT_FOUND)
+        }
+    }
+
+    // 取消关注话题
+    @UseGuards(JwtAuthGuard)
+    @Delete('followingTopic/:id')
+    async unFollowTopic(@Param() unFollowTopicDto:FollowTopicDto,@DUser() user:User){
+        const topic = await this.topicService.findTopicById(unFollowTopicDto.id)
+        if (topic){
+            return this.usersService.unFollowTopic(unFollowTopicDto.id,user._id)
+        }else {
+            throw new HttpException('话题不存在',HttpStatus.NOT_FOUND)
+        }
+    }
+    // 获取关注话题列表
+    @UseGuards(JwtAuthGuard)
+    @Get(':id/followingTopics')
+    async getFollowingTopics(@Param() FollowTopicDto:FollowTopicDto){
+        const result = await this.usersService.getFollowingTopics(FollowTopicDto.id)
+        return {
+            topics:result
         }
     }
 }

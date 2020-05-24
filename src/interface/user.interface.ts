@@ -12,7 +12,7 @@ export interface User extends Document {
   readonly employments: string[];
   readonly educations: string[];
   readonly following: string[];
-  readonly followingTopics: string[];
+  readonly followingTopics: any[];
   readonly liningAnswers: string[];
   readonly disliningAnswers: string[];
   readonly collectingAnswers: string[];
