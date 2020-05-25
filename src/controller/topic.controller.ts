@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, Query, UseGuards, Delete, Req, HttpException, HttpStatus, Put, PlainLiteralObject } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Query, UseGuards, Delete, Req, HttpException, HttpStatus, Put, PlainLiteralObject, Patch } from '@nestjs/common';
 import { UserService } from './../service/users.service'
 import { User, FollowersList } from './../interface/user.interface';
 import { CreateUserDto,FindUsersDto } from 'src/dto/users.dto';
@@ -36,6 +36,24 @@ export class TopicController {
         const result:Topic = await this.topicService.findTopicById(findTopicDto.topicId)
         return {
             topic:result
+        }
+    }
+
+    // 修改话题
+    @UseGuards(JwtAuthGuard)
+    @Patch(':topicId')
+    async updateTopic(@Param('topicId') topicId:string,@Body() updateTopic:any):Promise<any>{
+        return {
+            topic:await this.topicService.updateTopic(topicId,updateTopic)
+        }
+    }
+
+    // 查看关注当前话题的人
+    @UseGuards(JwtAuthGuard)
+    @Get(':topicId/followertopics')
+    async getFollowerTopics(@Param('topicId') tipicId:string):Promise<any>{
+        return {
+            users:await this.topicService.getFollowerTopics(tipicId)
         }
     }
 }
