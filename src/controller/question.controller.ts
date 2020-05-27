@@ -1,25 +1,33 @@
 import { Controller, Get, Post, Param, Body, Query, UseGuards, Delete, Req, HttpException, HttpStatus, Put, PlainLiteralObject, Patch } from '@nestjs/common';
-import { UserService } from './../service/users.service'
-import { User, FollowersList } from './../interface/user.interface';
-import { CreateUserDto,FindUsersDto } from 'src/dto/users.dto';
-import { SelectFields } from 'src/decorators/fields.decorator';
-import { JwtAuthGuard } from 'src/module/auth/jwt-auth.guard';
-import { DUser } from 'src/decorators/user.decorator';
-import { TopicService } from 'src/service/topic.service';
-import { JwtStrategy } from 'src/module/auth/jwt.strategy';
-import { CreateTopicDto, FindTopicsDto, FindTopicDto } from 'src/dto/topic.dto';
-import { Topic, CreateTopic } from 'src/interface/topic.interface';
 import { QuestionService } from 'src/service/question.service';
-import { FindQuestionDto } from 'src/dto/question.dto';
+import { FindQuestionDto, CreateQustionDto } from 'src/dto/question.dto';
+import { Question } from 'src/interface/question.interface';
+import { DUser } from 'src/decorators/user.decorator';
+import { User } from 'src/interface/user.interface';
+import { JwtAuthGuard } from 'src/module/auth/jwt-auth.guard';
 
 @Controller('question')
 export class QuestionController {
     constructor(private questionService:QuestionService){}
 
+    // 获取分页问题列表
     @Get()
     async getQuestions(@Query() findQuestionDto:FindQuestionDto){
-        return' await this.questionService.getQuestions(findQuestionDto)'
+        return await this.questionService.getQuestions(findQuestionDto)
     }
 
 
+    // 创建问题
+    @UseGuards(JwtAuthGuard)
+    @Post()
+    async createQustion(@Body() createQustion:CreateQustionDto,@DUser() user:User):Promise<Question>{
+        return await this.questionService.createQuestion(createQustion,user._id)
+    }
+
+    // 删除问题
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    async deleteQuestion(@Param('id') id:string,@DUser() user:User){
+        return await this.questionService.deleteQuestion(id,user)
+    }
 }

@@ -29,3 +29,11 @@ export class FindQuestionDto{
     })
     limit:number;
 }
+
+
+export class CreateQustionDto {
+    @IsString()
+    title:string;
+    @IsString()
+    description:string;
+}
