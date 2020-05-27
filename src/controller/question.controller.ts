@@ -14,7 +14,7 @@ import { FindQuestionDto } from 'src/dto/question.dto';
 
 @Controller('question')
 export class QuestionController {
-    constructor(private topicService:TopicService,private questionService:QuestionService){}
+    constructor(private questionService:QuestionService){}
 
     @Get()
     async getQuestions(@Query() findQuestionDto:FindQuestionDto){
