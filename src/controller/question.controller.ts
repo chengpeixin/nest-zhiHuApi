@@ -24,6 +24,18 @@ export class QuestionController {
         return await this.questionService.createQuestion(createQustion,user._id)
     }
 
+    // 修改问题
+    // @UseGuards(JwtAuthGuard)
+    // @Patch()
+    // async updateQuestion ():Promise<Question>{
+
+    // }
+
+    // 查询问题详情
+    @Get(':id')
+    async getQuestionInfo(@Param('id') questionId:string):Promise<Question>{
+        return await this.questionService.getQuestionInfo(questionId)
+    }
     // 删除问题
     @UseGuards(JwtAuthGuard)
     @Delete(':id')

@@ -36,6 +36,15 @@ export class QuestionService {
     return {}
   }
 
+  // 获取问题相亲
+  async getQuestionInfo(id:string):Promise<Question>{
+    let question:any = await this.questionModel.findById(id)
+    if (!question){
+      question = {}
+    }
+    return question
+  }
+
   async checkQuestionExist(id:string):Promise<Question>{
     const question = await this.questionModel.findById(id).select('+questioner')
     if (!question) {
