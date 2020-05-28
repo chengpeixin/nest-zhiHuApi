@@ -5,6 +5,7 @@ import { Question } from 'src/interface/question.interface';
 import { DUser } from 'src/decorators/user.decorator';
 import { User } from 'src/interface/user.interface';
 import { JwtAuthGuard } from 'src/module/auth/jwt-auth.guard';
+import { CreateUserDto } from 'src/dto/users.dto';
 
 @Controller('question')
 export class QuestionController {
@@ -25,11 +26,11 @@ export class QuestionController {
     }
 
     // 修改问题
-    // @UseGuards(JwtAuthGuard)
-    // @Patch()
-    // async updateQuestion ():Promise<Question>{
-
-    // }
+    @UseGuards(JwtAuthGuard)
+    @Patch(':id')
+    async updateQuestion (@Param('id') questionId:string,@Body() updateQuestion:any,@DUser() user:User):Promise<Question>{
+        return await this.questionService.updateQuestion(questionId,updateQuestion,user._id)
+    }
 
     // 查询问题详情
     @Get(':id')

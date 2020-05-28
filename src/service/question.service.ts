@@ -3,6 +3,7 @@ import { Model } from 'mongoose';
 import { Question } from 'src/interface/question.interface';
 import { FindQuestionDto, CreateQustionDto } from 'src/dto/question.dto';
 import { User } from 'src/interface/user.interface';
+import { asap } from 'rxjs/internal/scheduler/asap';
 
 @Injectable()
 export class QuestionService {
@@ -43,6 +44,14 @@ export class QuestionService {
       question = {}
     }
     return question
+  }
+
+  // 修改问题
+  async updateQuestion(questionId:string,updateQuestion:any,userId:string):Promise<Question>{
+    const question:Question = await this.checkQuestionExist(questionId)
+    await this.checkQuestioner(question,userId)
+    await question.update(updateQuestion)
+    return Object.assign(question,updateQuestion)
   }
 
   async checkQuestionExist(id:string):Promise<Question>{
