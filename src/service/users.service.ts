@@ -13,7 +13,7 @@ export class UserService {
   // 创建用户
   async createUser(createParams:CreateUserDto): Promise<User> {
     const {name} = createParams
-    const repeatedUser = await this.userModel.findOne({name:name})
+    const repeatedUser:any = await this.userModel.findOne({name:name})
     if (repeatedUser){
       throw new HttpException('用户已存在,创建失败',HttpStatus.CONFLICT)
     }

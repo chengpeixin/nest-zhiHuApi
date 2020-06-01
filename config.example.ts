@@ -22,3 +22,6 @@ export const tokenEx = 60*60*24*7
 
 // jwt有效期
 export const jwtEx = '7d'
+
+// 报警监控dsn
+export const sentryDsn = ''
