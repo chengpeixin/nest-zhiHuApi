@@ -10,24 +10,29 @@ import { getLogger } from './lib/Logger'
 import * as rateLimit from 'express-rate-limit'
 import { SentryInterceptor } from './interceptor/sentry.interceptor';
 import { sentryDsn } from 'config';
+import { isProduction } from './util/util';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule,{
     logger:getLogger()
   });
-  Sentry.init({ dsn: sentryDsn });
+  processApp(app)
+  await app.listen(3000);
+}
+
+async function processApp (app){
+  if (isProduction){
+    Sentry.init({ dsn: sentryDsn });
+  }
   app['set']('trust proxy', 1)
   app.use(rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100
   }))
   app.useGlobalPipes(new PaginateParseIntPipe())
-  app.useGlobalPipes(new ValidationPipe(
-    {
-      transform: true
-    }
-  ));
-  app.useGlobalFilters(new HttpExceptionFilter())
-  app.useGlobalInterceptors(new TransformInterceptor()).useGlobalInterceptors(new SentryInterceptor())
-  await app.listen(3000);
+     .useGlobalPipes(new ValidationPipe({transform: true}))
+     .useGlobalFilters(new HttpExceptionFilter())
+     .useGlobalInterceptors(new TransformInterceptor())
+     .useGlobalInterceptors(new SentryInterceptor());
 }
+
 bootstrap();
