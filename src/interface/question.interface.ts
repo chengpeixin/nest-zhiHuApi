@@ -6,3 +6,13 @@ export interface Question extends Document{
     readonly questioner:any;
     readonly topics:any[];
 }
+
+
+
+export interface Answer extends Document{
+    readonly __v: number;
+    readonly content:string;
+    readonly answerer:string;
+    readonly questionId:string;
+    readonly voteCount:number;
+}
