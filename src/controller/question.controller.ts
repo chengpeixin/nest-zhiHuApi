@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Param, Body, Query, UseGuards, Delete, Req, HttpException, HttpStatus, Put, PlainLiteralObject, Patch } from '@nestjs/common';
 import { QuestionService } from 'src/service/question.service';
-import { FindQuestionDto, CreateQustionDto } from 'src/dto/question.dto';
+import { FindQuestionDto, CreateQustionDto, FindAnswerDto, CreateAnswerDto } from 'src/dto/question.dto';
 import { Question, Answer } from 'src/interface/question.interface';
 import { DUser } from 'src/decorators/user.decorator';
 import { User } from 'src/interface/user.interface';
@@ -48,10 +48,24 @@ export class QuestionController {
 
 
 
-    // 问题下的答案
-    //Promise<Array<Answer>>
+    // 问题下的答案分页列表
     @Get(':questionId/answers')
-    async getAnswers(@Param('questionId') questionId:string){
-        return this.answerService.getnames()
+    async getAnswers(@Query() findAnswer:FindAnswerDto,@Param('questionId') questionId:string):Promise<any>{
+        return await this.answerService.getAnswers(questionId,findAnswer)
+    }
+
+    // 创建答案
+    @Post(':questionId/answers')
+    @UseGuards(JwtAuthGuard)
+    async createAnswer(@DUser() user:User,@Param('questionId') questionId:string ,@Body() createAnswer:CreateAnswerDto):Promise<any>{
+        return {
+            answer:await this.answerService.createAnswer(user._id,createAnswer,questionId)
+        }
+    }
+    
+    @Delete(':questionId/answers/:id')
+    @UseGuards(JwtAuthGuard)
+    async deleteAnswer(@DUser() user:User,@Param('id') id:string,@Param('questionId') questionId:string){
+        return await this.answerService.deleteAnswer(user,id,questionId)
     }
 }

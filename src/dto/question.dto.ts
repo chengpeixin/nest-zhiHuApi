@@ -30,10 +30,38 @@ export class FindQuestionDto{
     limit:number;
 }
 
+export class FindAnswerDto{
+    @IsInt({
+        message:'当前页数必须为数字类型'
+    })
+    @Min(1,{
+        message:'最小页数为1'
+    })
+    page:number;
+
+    @IsInt({
+        message:'分页参数必须为数字类型'
+    })
+    @Min(1,{
+        message:'分页参数最小为1'
+    })
+    limit:number;
+}
+
+
+
+
 
 export class CreateQustionDto {
     @IsString()
     title:string;
     @IsString()
     description:string;
+}
+
+
+
+export class CreateAnswerDto{
+    @IsString()
+    content:string;
 }

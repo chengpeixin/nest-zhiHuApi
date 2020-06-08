@@ -31,7 +31,6 @@ export class CacheService{
     }
 
     async remove(key:string){
-        console.log(this.client)
         await this.client.del(key)
     }
 }

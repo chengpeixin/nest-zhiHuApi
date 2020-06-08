@@ -14,5 +14,4 @@ export interface Answer extends Document{
     readonly content:string;
     readonly answerer:string;
     readonly questionId:string;
-    readonly voteCount:number;
 }
