@@ -100,4 +100,12 @@ export class UserController {
             topics:result
         }
     }
+
+    // 用户提问的问题
+    @Get('/:id/questions')
+    async userQuestions(@Param('id') id:string){
+        return {
+            questions:await this.usersService.getUserQuestions(id)
+        }
+    }
 }

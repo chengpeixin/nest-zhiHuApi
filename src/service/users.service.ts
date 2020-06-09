@@ -3,12 +3,15 @@ import { Model } from 'mongoose';
 import { User } from './../interface/user.interface';
 import { CreateUserDto, FindUsersDto } from 'src/dto/users.dto';
 import { Topic } from 'src/interface/topic.interface';
+import { Question } from 'src/interface/question.interface';
 
 @Injectable()
 export class UserService {
   constructor(
     @Inject('USER_MODEL')
     private userModel: Model<User>,
+    @Inject('QUESTION_MODEL')
+    private questionModel: Model<Question>,
   ) {}
   // 创建用户
   async createUser(createParams:CreateUserDto): Promise<User> {
@@ -124,6 +127,12 @@ export class UserService {
     }else{
       return user.followingTopics;
     }
+  }
+
+
+  // 用户回答的问题列表
+  async getUserQuestions(id:string){
+    return this.questionModel.find({questioner:id})
   }
 
   // 根据id查询用户
