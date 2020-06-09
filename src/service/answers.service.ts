@@ -34,6 +34,20 @@ export class AnswerService {
     return answers;
   }
 
+  // 查看答案详情
+  async getAnswerById(questionId:string,answerId:string){
+    const answer = await this.checkAnswersExist(questionId,answerId)
+    return answer
+  }
+
+  // 修改答案
+  async updateAnswer(questionId:string,answerId:string,user:User,updateAnswer:any){
+    const answer = await this.checkAnswersExist(questionId,answerId)
+    await this.checkAnswerer(user._id,answer)
+    await answer.update(updateAnswer)
+    return Object.assign(answer,updateAnswer);
+  }
+
 
   // 判断是否存在答案
   async checkAnswersExist(questionId:string,answerId:string){

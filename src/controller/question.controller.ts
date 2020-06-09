@@ -63,6 +63,28 @@ export class QuestionController {
         }
     }
     
+    // 答案详情
+    @Get(':questionId/answers/:answerId')
+    @UseGuards(JwtAuthGuard)
+    async getAnswer(@Param('questionId') questionId:string,@Param('answerId') answerId:string){
+        return {
+            answer:await this.answerService.getAnswerById(questionId,answerId)
+        }
+    }
+
+    // 修改答案
+    @Patch(':questionId/answers/:answerId')
+    @UseGuards(JwtAuthGuard)
+    async updateAnswer(@DUser() user:User,
+                       @Param('questionId') questionId:string,
+                       @Param('answerId') answerId:string,
+                       @Body() updateAnswer:any){
+        return {
+            answer:await this.answerService.updateAnswer(questionId,answerId,user,updateAnswer)
+        }
+    }
+    
+    // 删除答案
     @Delete(':questionId/answers/:id')
     @UseGuards(JwtAuthGuard)
     async deleteAnswer(@DUser() user:User,@Param('id') id:string,@Param('questionId') questionId:string){
