@@ -108,4 +108,23 @@ export class UserController {
             questions:await this.usersService.getUserQuestions(id)
         }
     }
+
+
+    //用户赞过的答案列表
+    @UseGuards(JwtAuthGuard)
+    @Get('/:id/likingAnswers')
+    async listLikingAnswers(@Param('id') id:string){
+        return {
+            likingAnswers:await this.usersService.getListLiking(id)
+        }
+    }
+
+    // 赞答案
+    @UseGuards(JwtAuthGuard)
+    @Put('/:id/likingAnswers')
+    async unDislikeAnswer(@Param('id') id:string){
+        return {
+            likingAnswers:await this.usersService.unDislikeAnswer(id)
+        }
+    }
 }

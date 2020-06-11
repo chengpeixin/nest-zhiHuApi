@@ -135,6 +135,15 @@ export class UserService {
     return this.questionModel.find({questioner:id})
   }
 
+
+  // 用户赞过的答案
+  async getListLiking(id:string){
+    return await this.userModel.findById(id).select('+liningAnswers').populate('dislikingAnswers')
+  }
+
+  // 赞答案
+  async unDislikeAnswer(id){}
+
   // 根据id查询用户
   async findOneByUserId(_id:string):Promise<User>{
     return await this.userModel.findById(_id).select('+password')
