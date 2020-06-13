@@ -6,14 +6,15 @@ import { SelectFields } from 'src/decorators/fields.decorator';
 import { JwtAuthGuard } from 'src/module/auth/jwt-auth.guard';
 import { DUser } from 'src/decorators/user.decorator';
 import { FollowTopicDto } from 'src/dto/topic.dto';
-import { Topic } from 'src/interface/topic.interface';
 import { TopicService } from 'src/service/topic.service';
+import { AnswerService } from 'src/service/answers.service';
 
 @Controller('user')
 export class UserController {
     constructor(
         private usersService: UserService,
-        private topicService:TopicService
+        private topicService:TopicService,
+        private answerService:AnswerService
     ){}
 
     // 分页查询用户，支持用户名称
@@ -121,10 +122,17 @@ export class UserController {
 
     // 赞答案
     @UseGuards(JwtAuthGuard)
-    @Put('/:id/likingAnswers')
-    async unDislikeAnswer(@Param('id') id:string){
-        return {
-            likingAnswers:await this.usersService.unDislikeAnswer(id)
-        }
+    @Put('/likingAnswers/:id')
+    async unDislikeAnswer(@DUser() user:User,@Param('id') id:string){
+        await this.answerService.fabulousAnswer(id,user)
+        return {}
+    }
+
+    // 取消赞答案
+    @UseGuards(JwtAuthGuard)
+    @Delete('/likingAnswers/:id')
+    async unlikeAnswer(@DUser() user:User,@Param('id') id:string){
+        await this.answerService.unlikeAnswer(id,user)
+        return {}
     }
 }

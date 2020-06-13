@@ -5,11 +5,14 @@ import { DatabaseModule } from './database.module';
 import { usersProviders } from 'src/providers/users.providers';
 import { TopicModule } from './topic.module';
 import { questionProviders } from 'src/providers/questions.providers';
+import { QuestionModule } from './question.module';
+import { AnswerService } from 'src/service/answers.service';
+import { answersProviders } from 'src/providers/answers.providers';
 
 @Module({
-  imports:[DatabaseModule,TopicModule],
+  imports:[DatabaseModule,TopicModule,QuestionModule],
   controllers: [UserController],
-  providers: [UserService,...usersProviders,...questionProviders],
+  providers: [UserService,...usersProviders,...questionProviders,...answersProviders,AnswerService],
   exports: [UserService]
 })
 export class UsersModule {}

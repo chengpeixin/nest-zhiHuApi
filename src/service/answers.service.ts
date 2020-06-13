@@ -1,13 +1,15 @@
 import { Injectable, Inject, Req, HttpException, HttpStatus, PlainLiteralObject } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Answer } from 'src/interface/question.interface';
-import { User } from '@sentry/node';
+import { User } from 'src/interface/user.interface';
 
 @Injectable()
 export class AnswerService {
   constructor(
     @Inject('ANSWER_MODEL')
     private answerModel: Model<Answer>,
+        @Inject('USER_MODEL')
+    private userModel: Model<User>,
   ) {}
 
   getnames(){
@@ -49,8 +51,54 @@ export class AnswerService {
   }
 
 
+  // 点赞答案
+  async fabulousAnswer(id:string,user:User){
+    await this.checkAnswersExist(null,id)
+    const me = await this.userModel.findById(user._id).select('+liningAnswers')
+    if (!me.liningAnswers.map(id=>id.toString()).includes(id)){
+      me.liningAnswers.push(id)
+      me.save()
+      await this.answerModel.findByIdAndUpdate(id,{
+          $inc:{voteCount:1}
+      })
+    }
+    return await this.unDislikeAnswer(id,user._id)
+  }
+
+
+  // 取消踩答案
+  async unDislikeAnswer(id:string,userId:string){
+    const me = await this.userModel.findById(userId).select('+disliningAnswers')
+    const index = me.disliningAnswers.map(id=>id.toString()).indexOf(id)
+    if (index>-1){
+      me.disliningAnswers.splice(index,1)
+      me.save()
+      await this.answerModel.findByIdAndUpdate(id,{
+          $inc:{voteCount:-1}
+      })
+    }
+    return {};
+  }
+
+
+  // 取消赞答案
+  async unlikeAnswer(id:string,user:User){
+    await this.checkAnswersExist(null,id)
+    const me = await this.userModel.findById(user._id).select('+liningAnswers')
+    const index = me.liningAnswers.map(id=>id.toString()).indexOf(id)
+    if (index>-1){
+        me.liningAnswers.splice(index,1)
+        me.save()
+        await this.answerModel.findByIdAndUpdate(id,{
+            $inc:{voteCount:-1}
+        })
+    }
+    return {}
+  }
+
+
   // 判断是否存在答案
-  async checkAnswersExist(questionId:string,answerId:string){
+  async checkAnswersExist(questionId:string|undefined|null,answerId:string){
     const answers = await this.answerModel.findById(answerId)
     if (!answers) {
       throw new HttpException('答案不存在',404)

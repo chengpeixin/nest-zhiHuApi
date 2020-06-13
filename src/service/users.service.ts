@@ -142,7 +142,7 @@ export class UserService {
   }
 
   // 赞答案
-  async unDislikeAnswer(id){}
+  async fabulousAnswer(id){}
 
   // 根据id查询用户
   async findOneByUserId(_id:string):Promise<User>{
