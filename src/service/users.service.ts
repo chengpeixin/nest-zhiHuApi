@@ -141,8 +141,12 @@ export class UserService {
     return await this.userModel.findById(id).select('+liningAnswers').populate('dislikingAnswers')
   }
 
-  // 赞答案
-  async fabulousAnswer(id){}
+  // 用户收藏了哪些答案
+  async listCollectingAnswers(user:User){
+    const currentUser = await this.userModel.findById(user._id)
+    .select('+collectingAnswers').populate('collectingAnswers')
+    return currentUser.collectingAnswers;
+  }
 
   // 根据id查询用户
   async findOneByUserId(_id:string):Promise<User>{

@@ -135,4 +135,54 @@ export class UserController {
         await this.answerService.unlikeAnswer(id,user)
         return {}
     }
+
+
+    // 用户踩过的答案列表
+    @Get('/:id/dislikingAnswers')
+    async dislikingAnswers(@Param('id') id:string){
+        return {
+            dislikingAnswers:await this.answerService.dislikingAnswers(id)
+        }
+    }
+
+    // 踩答案
+    @UseGuards(JwtAuthGuard)
+    @Put('/dislikingAnswers/:id')
+    async toDislikingAnswer(@DUser() user:User,@Param('id') id:string){
+        await this.answerService.toDislikingAnswer(id,user)
+        return {}
+    }
+
+    // 取消踩答案
+    @UseGuards(JwtAuthGuard)
+    @Delete('/dislikingAnswers/:id')
+    async unDislikingAnswer(@DUser() user:User,@Param('id') id:string){
+        await this.answerService.undislikingAnswers(id,user)
+        return {}
+    }
+
+    // 用户收藏了哪些答案
+    @UseGuards(JwtAuthGuard)
+    @Get('/:id/collectingAnswers')
+    async getDollectingAnswers(@DUser() user:User,@Param('id') id:string){
+        return {
+            answers:await this.usersService.listCollectingAnswers(user)
+        }
+    }
+
+    // 收藏答案
+    @UseGuards(JwtAuthGuard)
+    @Put('/collectingAnswers/:id')
+    async collectAnswer(@DUser() user:User,@Param('id') id:string){
+        await this.answerService.toCollectAnswer(user,id)
+        return {}
+    }
+
+    // 取消收藏答案
+    @UseGuards(JwtAuthGuard)
+    @Delete('/collectingAnswers/:id')
+    async cancelCollectingAnswer(@DUser() user:User,@Param('id') id:string){
+        await this.answerService.cancelCollectingAnswer(user,id)
+        return {}
+    }
 }

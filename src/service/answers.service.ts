@@ -96,6 +96,42 @@ export class AnswerService {
     return {}
   }
 
+  // 用户踩过的答案
+  async dislikingAnswers(id:string){
+    const user:User = await this.userModel.findById(id).select('+disliningAnswers')
+    if(!user){
+      throw new HttpException('用户不存在',404)
+    }else{
+      return user.disliningAnswers;
+    }
+  }
+
+
+  // 踩答案
+  async toDislikingAnswer(id:string,user:User){
+    await this.checkAnswersExist(null,id)
+    await this.disAnswers(user._id,id)
+    await this.unlikeAnswer(id,user)
+  }
+
+  // 踩
+  async disAnswers(userId,id){
+    const me = await this.userModel.findById(userId).select('+disliningAnswers')
+    if (!me.disliningAnswers.map(id=>id.toString()).includes(id)){
+      me.disliningAnswers.push(id)
+      me.save()
+      await this.answerModel.findByIdAndUpdate(id,{
+          $inc:{voteCount:1}
+      })
+    }
+  }
+
+  // 取消踩
+  async undislikingAnswers(id:string,user:User){
+    await this.checkAnswersExist(null,id)
+    await this.unDislikeAnswer(id,user._id)
+  }
+
 
   // 判断是否存在答案
   async checkAnswersExist(questionId:string|undefined|null,answerId:string){
@@ -122,5 +158,39 @@ export class AnswerService {
     await this.checkAnswerer(user._id,answer)
     await this.answerModel.findByIdAndRemove(id);
     return {};
+  }
+
+  // 收藏答案
+  async toCollectAnswer(user:User,id:string){
+    await this.checkAnswersExist(null,id)
+    await this.collectingAnswers(user._id,id)
+  }
+
+  // 收藏一个答案
+  async collectingAnswers(userId:string,id:string){
+    const me = await this.userModel.findById(userId).select('+collectingAnswers')
+    if (!me.collectingAnswers.map(id=>id.toString()).includes(id)){
+        me.collectingAnswers.push(id)
+        me.save()
+    }
+  }
+
+  // 取消收藏答案
+  async cancelCollectingAnswer(user:User,id:string){
+    await this.checkAnswersExist(null,id)
+    await this.toCancelCollectingAnswer(user,id)
+  }
+
+  // 取消收藏一个答案
+  async toCancelCollectingAnswer(user:User,id:string){
+    const me = await this.userModel.findById(user._id).select('+collectingAnswers')
+    const index = me.collectingAnswers.map(id=>id.toString()).indexOf(id)
+    if (index>-1){
+      me.collectingAnswers.splice(index,1)
+      me.save()
+      await this.answerModel.findByIdAndUpdate(id,{
+          $inc:{voteCount:-1}
+      })
+    }
   }
 }
